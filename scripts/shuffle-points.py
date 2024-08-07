@@ -1,15 +1,15 @@
 import sys
 import gpxpy
+import random
 
-def remove_timestamps(gpx):
+def shuffle_points(gpx):
     for track in gpx.tracks:
         for segment in track.segments:
-            for point in segment.points:
-                point.time = None
+            random.shuffle(segment.points)
 
 def process(gpx_data):
     gpx = gpxpy.parse(gpx_data)
-    remove_timestamps(gpx)
+    shuffle_points(gpx)
     return gpx.to_xml()
 
 def main():
@@ -20,5 +20,3 @@ def main():
     
 if __name__ == "__main__":
     main()
-
-

@@ -1,16 +1,17 @@
 import sys
 import gpxpy
 
-def adjust_accuracy(gpx):
+def remove_timestamps(gpx):
     for track in gpx.tracks:
+        track.name = None
+        track.type = None
         for segment in track.segments:
             for point in segment.points:
-                point.latitude = round(point.latitude, 6)
-                point.longitude = round(point.longitude, 6)
+                point.time = None
 
 def process(gpx_data):
     gpx = gpxpy.parse(gpx_data)
-    adjust_accuracy(gpx)
+    remove_timestamps(gpx)
     return gpx.to_xml()
 
 def main():
