@@ -3,11 +3,11 @@ import gpxpy
 
 def remove_timestamps(gpx):
     for track in gpx.tracks:
-        track.name = None
-        track.type = None
+        track.name, track.type = None, None
         for segment in track.segments:
             for point in segment.points:
-                point.time = None
+                point.time, point.elevation = None, None
+                point.extensions = None
 
 def process(gpx_data):
     gpx = gpxpy.parse(gpx_data)
