@@ -1,7 +1,7 @@
 import sys
 import gpxpy
 
-def remove_timestamps(gpx):
+def remove_metadata(gpx):
     for track in gpx.tracks:
         track.name, track.type = None, None
         for segment in track.segments:
@@ -11,7 +11,7 @@ def remove_timestamps(gpx):
 
 def process(gpx_data):
     gpx = gpxpy.parse(gpx_data)
-    remove_timestamps(gpx)
+    remove_metadata(gpx)
     return gpx.to_xml()
 
 def main():
