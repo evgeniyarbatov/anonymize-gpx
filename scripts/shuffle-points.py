@@ -8,6 +8,7 @@ def shuffle_points(gpx):
     for track in gpx.tracks:
         for segment in track.segments:
             random.shuffle(segment.points)
+            segment.points.sort(key=lambda p: (p.latitude, p.longitude))
 
 def process(gpx_data):
     gpx = gpxpy.parse(gpx_data)
