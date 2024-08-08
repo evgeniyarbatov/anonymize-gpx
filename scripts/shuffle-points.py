@@ -2,6 +2,8 @@ import sys
 import gpxpy
 import random
 
+random.seed(2024)
+
 def shuffle_points(gpx):
     for track in gpx.tracks:
         for segment in track.segments:
