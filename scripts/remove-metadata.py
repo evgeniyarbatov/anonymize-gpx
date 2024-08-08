@@ -11,6 +11,7 @@ def remove_xml_tags(xml):
     )
 
 def remove_metadata(gpx):
+    gpx.creator = None
     for track in gpx.tracks:
         track.name, track.type = None, None
         for segment in track.segments:
