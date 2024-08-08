@@ -1,20 +1,16 @@
 import sys
+import re
 import gpxpy
 
-def remove_metadata(gpx):
-    (
-        gpx.name, 
-        gpx.creator, 
-        gpx.description, 
-        gpx.time,
-        gpx.bounds,
-    ) = (
-        None,
-        None,
-        None,
-        None,
-        None,
+def remove_xml_tags(xml):
+    return re.sub(
+        r'<metadata>.*?</metadata>\s*', 
+        '', 
+        xml,
+        flags=re.DOTALL,
     )
+
+def remove_metadata(gpx):
     for track in gpx.tracks:
         track.name, track.type = None, None
         for segment in track.segments:
@@ -25,7 +21,11 @@ def remove_metadata(gpx):
 def process(gpx_data):
     gpx = gpxpy.parse(gpx_data)
     remove_metadata(gpx)
-    return gpx.to_xml()
+    
+    xml = gpx.to_xml()
+    xml = remove_xml_tags(xml)
+    
+    return xml
 
 def main():
     gpx_data = sys.stdin.read()
