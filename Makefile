@@ -24,7 +24,7 @@ $(DEST_DIR)/%: $(SRC_DIR)/% FORCE
 	cat $< | \
 	python3 scripts/remove-metadata.py | \
 	python3 scripts/adjust-accuracy.py | \
-	python3 scripts/shuffle-points.py | \
+	python3 scripts/simplify.py | \
 	python3 scripts/format-xml.py > $@
 
 clean:
