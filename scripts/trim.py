@@ -1,0 +1,40 @@
+import sys
+import gpxpy
+
+from utils import log
+
+DISTANCE = 1000
+
+def trim(gpx):
+    for track in gpx.tracks:
+        for segment in track.segments:
+            distances = [0.0]
+            for i in range(1, len(segment.points)):
+                previous_point = segment.points[i-1]
+                current_point = segment.points[i]
+                
+                distance = distances[-1] + previous_point.distance_2d(current_point)
+                distances.append(distance)
+            
+            end_distance = distances[-1] - DISTANCE
+            start_index = next(i for i, d in enumerate(distances) if d >= DISTANCE)
+            end_index = next(i for i, d in enumerate(distances) if d >= end_distance)
+            
+            segment.points = segment.points[start_index:end_index]
+
+def process(gpx_data):
+    gpx = gpxpy.parse(gpx_data)
+    
+    trim(gpx)
+    log(gpx, 'trim')
+    
+    return gpx.to_xml()
+
+def main():
+    gpx_data = sys.stdin.read()
+    print(
+       process(gpx_data) 
+    )
+    
+if __name__ == "__main__":
+    main()
