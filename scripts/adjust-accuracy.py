@@ -1,6 +1,8 @@
 import sys
 import gpxpy
 
+from utils import log
+
 def adjust_accuracy(gpx):
     for track in gpx.tracks:
         for segment in track.segments:
@@ -10,7 +12,10 @@ def adjust_accuracy(gpx):
 
 def process(gpx_data):
     gpx = gpxpy.parse(gpx_data)
+    
     adjust_accuracy(gpx)
+    log(gpx, 'adjust-accuracy')
+    
     return gpx.to_xml()
 
 def main():

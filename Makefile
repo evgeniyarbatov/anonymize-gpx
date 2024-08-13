@@ -1,12 +1,13 @@
 SRC_DIR := raw
 DEST_DIR := anonymized
+LOG_DIR := log
 VENV_PATH = ~/.venv/anonymize-gpx
 
 $(shell mkdir -p $(DEST_DIR))
+$(shell rm -rf $(LOG_DIR)/*)
+
 FILES := $(wildcard $(SRC_DIR)/*)
 TARGETS := $(FILES:$(SRC_DIR)/%=$(DEST_DIR)/%)
-
-.PHONY: all venv install clean
 
 all: venv install $(TARGETS)
 
@@ -20,6 +21,7 @@ install: venv
 FORCE:
 
 $(DEST_DIR)/%: $(SRC_DIR)/% FORCE
+
 	source $(VENV_PATH)/bin/activate && \
 	cat $< | \
 	python3 scripts/remove-metadata.py | \
@@ -29,5 +31,6 @@ $(DEST_DIR)/%: $(SRC_DIR)/% FORCE
 
 clean:
 	rm -f $(DEST_DIR)/*
+	rm -f $(DEST_DIR)/*
 
-
+.PHONY: all venv install clean

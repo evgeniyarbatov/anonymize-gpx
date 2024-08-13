@@ -2,6 +2,8 @@ import sys
 import re
 import gpxpy
 
+from utils import log
+
 def remove_xml_tags(xml):
     return re.sub(
         r'<metadata>.*?</metadata>\s*', 
@@ -21,7 +23,9 @@ def remove_metadata(gpx):
 
 def process(gpx_data):
     gpx = gpxpy.parse(gpx_data)
+    
     remove_metadata(gpx)
+    log(gpx, 'remove-metadata')
     
     xml = gpx.to_xml()
     xml = remove_xml_tags(xml)
