@@ -31,6 +31,15 @@ def get_stats(gpx):
     return count, round(distance, 2) 
 
 def log(gpx, step):
+    file_id = os.getenv('FILE_ID')
+    
     logger = logging.getLogger(__name__)
     count, distance = get_stats(gpx)
-    logger.info('%d points %f distance (%s)', count, distance, step)
+    
+    logger.info(
+        '%s,%d,%f,%s', 
+        file_id, 
+        count, 
+        distance, 
+        step,
+    )
