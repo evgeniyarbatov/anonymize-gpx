@@ -1,4 +1,4 @@
-SRC_DIR := raw
+SRC_DIR := $(shell echo ~/gitRepo/gpx-data/data/strava)
 DEST_DIR := anonymized
 LOG_DIR := log
 VENV_PATH = ~/.venv/anonymize-gpx
@@ -6,7 +6,7 @@ VENV_PATH = ~/.venv/anonymize-gpx
 $(shell mkdir -p $(DEST_DIR))
 $(shell rm -rf $(LOG_DIR)/*)
 
-FILES := $(wildcard $(SRC_DIR)/*)
+FILES := $(wildcard $(SRC_DIR)/*.gpx)
 TARGETS := $(FILES:$(SRC_DIR)/%=$(DEST_DIR)/%)
 
 all: venv install $(TARGETS) maps
@@ -31,8 +31,7 @@ $(DEST_DIR)/%.gpx: $(SRC_DIR)/%.gpx FORCE
 
 maps:
 	source $(VENV_PATH)/bin/activate && \
-	python3 scripts/make-maps.py anonymized && \
-	python3 scripts/make-maps.py raw
+	python3 scripts/make-maps.py anonymized
 
 clean:
 	rm -f $(DEST_DIR)/*
