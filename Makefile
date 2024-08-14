@@ -9,7 +9,7 @@ $(shell rm -rf $(DEST_DIR)/*)
 FILES := $(wildcard $(SRC_DIR)/*.gpx)
 TARGETS := $(FILES:$(SRC_DIR)/%=$(DEST_DIR)/%)
 
-all: venv install $(TARGETS) maps
+all: venv install $(TARGETS)
 
 venv:
 	@python3 -m venv $(VENV_PATH)
