@@ -9,7 +9,7 @@ $(shell rm -rf $(LOG_DIR)/*)
 FILES := $(wildcard $(SRC_DIR)/*)
 TARGETS := $(FILES:$(SRC_DIR)/%=$(DEST_DIR)/%)
 
-all: venv install $(TARGETS)
+all: venv install $(TARGETS) maps
 
 venv:
 	python3 -m venv $(VENV_PATH)
@@ -20,7 +20,7 @@ install: venv
 
 FORCE:
 
-$(DEST_DIR)/%: $(SRC_DIR)/% FORCE
+$(DEST_DIR)/%.gpx: $(SRC_DIR)/%.gpx FORCE
 	source $(VENV_PATH)/bin/activate && \
 	FILE_ID=$$(jot -r 1 1 100000000); \
 	export FILE_ID && \
@@ -31,8 +31,13 @@ $(DEST_DIR)/%: $(SRC_DIR)/% FORCE
 	python3 scripts/simplify.py | \
 	python3 scripts/format-xml.py > $@
 
+maps:
+	source $(VENV_PATH)/bin/activate && \
+	python3 scripts/make-maps.py anonymized && \
+	python3 scripts/make-maps.py raw
+
 clean:
 	rm -f $(DEST_DIR)/*
 	rm -f $(DEST_DIR)/*
 
-.PHONY: all venv install clean
+.PHONY: all venv install clean maps

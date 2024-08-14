@@ -1,3 +1,6 @@
 gpxpy
 lxml
 geopy
+pandas
+matplotlib
+contextily

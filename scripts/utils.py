@@ -1,7 +1,10 @@
 import logging
 import os
+import gpxpy
 
 from geopy.distance import geodesic
+
+import pandas as pd
 
 LOG_DIR = 'log'
 os.makedirs(LOG_DIR, exist_ok=True)
@@ -43,3 +46,24 @@ def log(gpx, step):
         distance, 
         step,
     )
+    
+def parse_gpx(filepath):
+  with open(filepath, 'r') as gpx_file:
+    gpx = gpxpy.parse(gpx_file)
+
+  data = []
+  for track in gpx.tracks:
+    for segment in track.segments:
+      for point in segment.points:
+        lat, lng = point.latitude, point.longitude
+        data.append({
+          'latitude': lat, 
+          'longitude': lng,
+        })
+
+  return pd.DataFrame(data)
+
+def get_output_path(output_dir, filename, extension):  
+  basename = os.path.splitext(os.path.basename(filename))[0]
+  output_filename = basename + '.' + extension
+  return os.path.join(output_dir, output_filename)
