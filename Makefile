@@ -22,8 +22,6 @@ FORCE:
 
 $(DEST_DIR)/%.gpx: $(SRC_DIR)/%.gpx FORCE
 	source $(VENV_PATH)/bin/activate && \
-	FILE_ID=$$(jot -r 1 1 100000000); \
-	export FILE_ID && \
 	cat $< | \
 	python3 scripts/remove-metadata.py | \
 	python3 scripts/adjust-accuracy.py | \

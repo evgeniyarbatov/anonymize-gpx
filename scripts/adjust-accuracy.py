@@ -11,12 +11,13 @@ def adjust_accuracy(gpx):
                 point.longitude = round(point.longitude, 6)
 
 def process(gpx_data):
-    gpx = gpxpy.parse(gpx_data)
+    original_gpx = gpxpy.parse(gpx_data)
+    edited_gpx = gpxpy.parse(gpx_data)
     
-    adjust_accuracy(gpx)
-    log(gpx, 'adjust-accuracy')
+    adjust_accuracy(edited_gpx)
+    log(original_gpx, edited_gpx, 'adjust-accuracy')
     
-    return gpx.to_xml()
+    return edited_gpx.to_xml()
 
 def main():
     gpx_data = sys.stdin.read()

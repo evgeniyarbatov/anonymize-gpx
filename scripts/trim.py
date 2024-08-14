@@ -23,12 +23,13 @@ def trim(gpx):
             segment.points = segment.points[start_index:end_index]
 
 def process(gpx_data):
-    gpx = gpxpy.parse(gpx_data)
+    original_gpx = gpxpy.parse(gpx_data)
+    edited_gpx = gpxpy.parse(gpx_data)
     
-    trim(gpx)
-    log(gpx, 'trim')
+    trim(edited_gpx)
+    log(original_gpx, edited_gpx, 'trim')
     
-    return gpx.to_xml()
+    return edited_gpx.to_xml()
 
 def main():
     gpx_data = sys.stdin.read()

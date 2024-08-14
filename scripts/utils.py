@@ -2,9 +2,12 @@ import logging
 import os
 import gpxpy
 
-from geopy.distance import geodesic
-
 import pandas as pd
+
+from fastdtw import fastdtw
+from scipy.spatial.distance import euclidean
+
+from geopy.distance import geodesic
 
 LOG_DIR = 'log'
 os.makedirs(LOG_DIR, exist_ok=True)
@@ -16,6 +19,51 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(message)s',
 )
+ 
+def parse_gpx(filepath):
+	data = []  
+
+	with open(filepath, 'r') as gpx_file:
+		gpx = gpxpy.parse(gpx_file)
+    
+	for track in gpx.tracks:
+		for segment in track.segments:
+			for point in segment.points:
+				lat, lng = point.latitude, point.longitude
+				data.append({
+					'latitude': lat, 
+					'longitude': lng,
+				})
+
+	return pd.DataFrame(data)
+
+def get_output_path(output_dir, filename, extension):  
+  basename = os.path.splitext(os.path.basename(filename))[0]
+  output_filename = basename + '.' + extension
+  return os.path.join(output_dir, output_filename)
+
+def get_gpx_coordinates(gpx):
+    coordinates = []
+    for track in gpx.tracks:
+        for segment in track.segments:
+            for point in segment.points:
+                coordinates.append((
+                    point.latitude, 
+                    point.longitude,
+                ))
+    return coordinates
+
+def get_dtw_distance(original_gpx, edited_gpx):
+	original_coordinates = get_gpx_coordinates(original_gpx)
+	edited_coordinates = get_gpx_coordinates(edited_gpx)
+ 
+	distance, _ = fastdtw(
+		original_coordinates, 
+		edited_coordinates, 
+		dist=euclidean,
+  	)
+ 
+	return distance
 
 def get_stats(gpx):
     count, distance = 0, 0.0
@@ -33,37 +81,19 @@ def get_stats(gpx):
 
     return count, round(distance, 2) 
 
-def log(gpx, step):
-    file_id = os.getenv('FILE_ID')
-    
+def log(original_gpx, edited_gpx, step):
     logger = logging.getLogger(__name__)
-    count, distance = get_stats(gpx)
+    
+    original_count, original_distance = get_stats(original_gpx)
+    new_count, new_distance = get_stats(edited_gpx)
+    dtw_distance = get_dtw_distance(original_gpx, edited_gpx)
     
     logger.info(
-        '%s,%d,%f,%s', 
-        file_id, 
-        count, 
-        distance, 
+        '%d,%f,%d,%f,%f,%s', 
+        original_count, 
+        original_distance,
+        new_count, 
+        new_distance, 
+        dtw_distance,
         step,
     )
-    
-def parse_gpx(filepath):
-  with open(filepath, 'r') as gpx_file:
-    gpx = gpxpy.parse(gpx_file)
-
-  data = []
-  for track in gpx.tracks:
-    for segment in track.segments:
-      for point in segment.points:
-        lat, lng = point.latitude, point.longitude
-        data.append({
-          'latitude': lat, 
-          'longitude': lng,
-        })
-
-  return pd.DataFrame(data)
-
-def get_output_path(output_dir, filename, extension):  
-  basename = os.path.splitext(os.path.basename(filename))[0]
-  output_filename = basename + '.' + extension
-  return os.path.join(output_dir, output_filename)

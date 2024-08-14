@@ -25,7 +25,6 @@ def process(gpx_data):
     gpx = gpxpy.parse(gpx_data)
     
     remove_metadata(gpx)
-    log(gpx, 'remove-metadata')
     
     xml = gpx.to_xml()
     xml = remove_xml_tags(xml)

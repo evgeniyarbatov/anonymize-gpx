@@ -4,3 +4,5 @@ geopy
 pandas
 matplotlib
 contextily
+fastdtw
+scipy
