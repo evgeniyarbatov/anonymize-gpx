@@ -1,9 +1,9 @@
 import sys
 import gpxpy
 
-from utils import log
+from utils import log, get_config
 
-DISTANCE = 1000
+DISTANCE = get_config('distance_to_trim')
 
 def trim(gpx):
     for track in gpx.tracks:

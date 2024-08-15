@@ -23,7 +23,10 @@ def is_location_allowed(gpx):
     return False
 
 def is_allowed(gpx_data):
-    gpx = gpxpy.parse(gpx_data)
+    try:
+        gpx = gpxpy.parse(gpx_data)
+    except gpxpy.gpx.GPXException:
+        return False
     
     is_allowed = is_location_allowed(gpx)
     

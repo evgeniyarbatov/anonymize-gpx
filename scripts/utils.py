@@ -1,6 +1,7 @@
 import logging
 import os
 import gpxpy
+import json
 
 import pandas as pd
 
@@ -19,6 +20,11 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(message)s',
 )
+ 
+def get_config(key):
+    with open('config.json', 'r') as file:
+        data = json.load(file)
+    return data.get(key)
  
 def parse_gpx(filepath):
 	data = []  

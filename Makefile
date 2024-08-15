@@ -31,7 +31,7 @@ $(DEST_DIR)/%.gpx: $(SRC_DIR)/%.gpx FORCE
 		python3 scripts/simplify.py $@ | \
 		python3 scripts/format-xml.py > $@; \
 	else \
-		echo "Not allowed: "$<; \
+		echo "Skipping: "$<; \
 	fi
 
 maps:
