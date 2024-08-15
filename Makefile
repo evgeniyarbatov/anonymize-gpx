@@ -3,9 +3,6 @@ DEST_DIR := anonymized
 LOG_DIR := log
 VENV_PATH = ~/.venv/anonymize-gpx
 
-$(shell rm -rf $(LOG_DIR)/*)
-$(shell rm -rf $(DEST_DIR)/*)
-
 FILES := $(wildcard $(SRC_DIR)/*.gpx)
 TARGETS := $(FILES:$(SRC_DIR)/%=$(DEST_DIR)/%)
 
@@ -18,9 +15,7 @@ install: venv
 	@source $(VENV_PATH)/bin/activate && \
 	pip install --disable-pip-version-check -q -r requirements.txt
 
-FORCE:
-
-$(DEST_DIR)/%.gpx: $(SRC_DIR)/%.gpx FORCE
+$(DEST_DIR)/%.gpx: $(SRC_DIR)/%.gpx
 	@source $(VENV_PATH)/bin/activate && \
 	if python3 scripts/is-allowed.py $<; then \
 		echo "Processing: "$<; \
@@ -40,5 +35,6 @@ maps:
 
 clean:
 	rm -f $(DEST_DIR)/*
+	rm -rf $(LOG_DIR)/*
 
 .PHONY: all venv install clean maps
