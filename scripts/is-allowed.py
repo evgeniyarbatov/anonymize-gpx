@@ -1,9 +1,9 @@
 import sys
 import gpxpy
 
-LOCATIONS = [
-    (1.130475, 1.450475, 103.609168, 104.029168), # Singapore
-]
+from utils import get_config
+
+LOCATIONS = get_config('locations')
 
 def is_within_box(point, min_lat, max_lat, min_lon, max_lon):
     return min_lat <= point.latitude <= max_lat and min_lon <= point.longitude <= max_lon
@@ -25,7 +25,8 @@ def is_location_allowed(gpx):
 def is_allowed(gpx_data):
     try:
         gpx = gpxpy.parse(gpx_data)
-    except gpxpy.gpx.GPXException:
+    except gpxpy.gpx.GPXException as e:
+        print('Error parsing:', e)
         return False
     
     is_allowed = is_location_allowed(gpx)
